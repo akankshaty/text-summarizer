@@ -1,10 +1,18 @@
-from transformers import pipeline
 import gradio as gr
+from summarizer import TextSummarizer
 
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+# Create one instance and reuse
+summarizer = TextSummarizer()
 
-def summarize_text(text):
-    summary = summarizer(text, max_length=130, min_length=30, do_sample=False)
-    return summary[0]['summary_text']
+def summarize_text(text, model_choice):
+    return summarizer.summarize(text, model_choice)
 
-gr.Interface(fn=summarize_text, inputs="textbox", outputs="textbox", title="AI Text Summarizer").launch()
+gr.Interface(
+    fn=summarize_text,
+    inputs=[
+        gr.Textbox(lines=10, label="Enter text to summarize"),
+        gr.Dropdown(choices=["BART", "T5", "Pegasus"], label="Model", value="BART")
+    ],
+    outputs="textbox",
+    title="Preloaded AI Text Summarizer"
+).launch()
