@@ -24,3 +24,10 @@ class TextSummarizer:
 
         result = summarizer(text, max_length=int(max_length), min_length=int(min_length), do_sample=False)
         return result[0]['summary_text']
+    
+    def summarize_with_all_models(self, text, max_length=130, min_length=30):
+        summaries = {}
+        for model_name, summarizer in self.pipelines.items():
+            result = summarizer(text, max_length=int(max_length), min_length=int(min_length), do_sample=False)
+            summaries[model_name] = result[0]['summary_text']
+        return summaries
